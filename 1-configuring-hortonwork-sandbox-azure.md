@@ -101,18 +101,30 @@ To look up the SSH port click on the `Settings` icon on the top panel
 
 ![](https://www.dropbox.com/s/wr8e07l3vssyb49/Screenshot%202015-06-04%2020.01.49.png?dl=1)
 
-Click on `Endpoints` and scroll down to note the public SSH for your VM
+Click on `Endpoints` and scroll down to note the public SSH port for your VM
 
 ![](https://www.dropbox.com/s/cfwk3qykqjx2ihr/Screenshot%202015-06-04%2020.02.25.png?dl=1)
 
 Now we can use the command below to login.
 
-```
+```bash
 ssh <username>@<hostname>.cloudapp.net -p <port>;
 ```
 
-replace <username>, <hostname> and <port> as you have noted down during your deployment. The password is the same password that you have provided during deployment.
+Replace `<username>`, `<hostname>` and `<port>` as you have noted down during your deployment. The password is the same password that you have provided during deployment.
 
 ![](https://www.dropbox.com/s/w49sxetruslq065/Screenshot%202015-06-04%2020.14.20.png?dl=1)
+
+Once you login, let's change the `root` password to a known password using the command
+
+```bash
+sudo passwd root
+```
+
+![](https://www.dropbox.com/s/flioznhrl97ik35/Screenshot%202015-06-07%2015.43.44.png?dl=1)
+
+Now we can login as `root` with the command `su`
+
+![](https://www.dropbox.com/s/e1euvrfwau5v9u4/Screenshot%202015-06-07%2015.48.04.png?dl=1)
 
 If you want a full list of tutorial that you can use with your newly minted Hortonworks Sandbox on Azure go to [http://hortonworks.com/tutorials](http://hortonworks.com/tutorials).
