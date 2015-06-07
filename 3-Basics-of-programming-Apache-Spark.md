@@ -1,0 +1,73 @@
+#Basics of programming Apache Spark
+
+
+###Concepts
+
+**RDD** or Resilient Distributed Dataset is an immutable collection of objects that is usually partitioned and distributed across multiple physical nodes of the YARN cluster.
+
+Typically, RDDs are instantiated by loading data from HDFS on a YARN cluster.
+
+Once a RDD is instantiated you can apply a series of operations. All operations fall into one of two types, **transformations** or **actions**. **Transformation** operations build out the processing graph which can then be applied on the partitioned dataset across the YARN cluster once the **Action** operation is invoked.
+
+Let's try it out.
+
+###Hands-On
+
+Let's open a shell to our Sandbox through SSH:
+
+![](https://www.dropbox.com/s/tzsxvsnxfo26jn7/Screenshot_2015-04-13_07_58_43.png?dl=1)
+
+The default password is `hadoop`
+
+Then let's get some data with the command below in your shell prompt:
+
+```bash
+wget http://en.wikipedia.org/wiki/Hortonworks
+```
+![](https://www.dropbox.com/s/p6v9f2garljdpoj/Screenshot_2015-04-13_08_11_41.png?dl=1)
+
+Copy the data over to HDFS on Sandbox:
+
+```bash
+hadoop fs -put ~/Hortonworks /user/guest/Hortonworks
+```
+
+
+Let's start the PySpark shell and work through a simple example of counting the lines in a file. PySpark shell let's us interact with out data using Spark and Python:
+
+```bash
+pyspark
+```
+![](https://www.dropbox.com/s/vr5syq682z8usla/Screenshot%202015-04-13%2007.59.59.png?dl=1)
+
+As discussed above, the first step is to instantiate the RDD using the Spark Context `sc` with the file `Hortonworks` on HDFS.
+
+```python
+myLines = sc.textFile('hdfs://sandbox.hortonworks.com/user/guest/Hortonworks')
+```
+![](https://www.dropbox.com/s/a2d7v61acgozid7/Screenshot%202015-04-13%2009.10.32.png?dl=1)
+
+Now that we have instantiated the RDD, it's time to apply some transformation operations on the RDD. In this case, I am going to apply a simple transformation operation using a Python lambda expression to filter out all the empty lines.
+
+```python
+myLines_filtered = myLines.filter( lambda x: len(x) > 0 )
+```
+![](https://www.dropbox.com/s/0m0wg35a89p3rrj/Screenshot%202015-04-13%2009.17.52.png?dl=1)
+
+Note that the previous Python statement returned without any output. This lack of output signifies, that the transformation operation did not touch the data in any way so far, but has only modified the processing graph.
+
+Let's make this transformation real, with an Action operation like 'count()', which will execute all the transformation actions before and apply this aggregate function.
+
+```python
+myLines_filtered.count()
+```
+![](https://www.dropbox.com/s/q42679pbo8m2hf1/Screenshot%202015-04-13%2009.19.07.png?dl=1)
+
+The final result of this little Spark Job is the number you see at the end. In this case it is `341`.
+
+Hope this little example whets up your appetite for more ambitious data science projects on the Hortonworks Data Platform.
+
+For more on Apache Spark, check out the links below:
+
+- [http://hortonworks.com/spark](http://hortonworks.com/spark)
+- Announcement of Apache Spark on HDP general availability
