@@ -5,6 +5,18 @@ Here are a couple more examples of markdown elements. Here we have a blockquote:
 > Don't think about making art, just get it done. Let everyone else decide if it's good or bad, whether they love it or hate it. While they are deciding, make even more art.
 > Andy Warhol
 
+Use VIM or your favorite text editor to edit the log4j.properties file:
+sudo vim /etc/dse/spark/log4j.properties
+
+Simply change the 2nd line in the from the INFO -> WARN like so:
+Set everything to be logged to the console
+
+```
+log4j.rootCategory=WARN, console
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+<rest of file truncated>
+```
+
 And a numbered list:
 
 1. Numbered Item 1
