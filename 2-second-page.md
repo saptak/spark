@@ -1,4 +1,4 @@
-# Second Page
+# Installing and configuring Apache Spark
 
 Here are a couple more examples of markdown elements. Here we have a blockquote:
 

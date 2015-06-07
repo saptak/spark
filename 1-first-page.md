@@ -1,4 +1,4 @@
-# First Page
+# Hortonworks Sandbox on Azure
 
 Below are a few simple examples of embedding content with markdown, starting with an image embed.
 
