@@ -1,4 +1,4 @@
-# Installing and configuring Apache Spark
+# Installing Apache Spark 1.3.1 on HDP 2.2.4.2
 
 In this section we will configure Spark 1.3.1 on Hortonworks Sandbox with HDP 2.2.
 
