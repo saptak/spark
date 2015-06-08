@@ -99,6 +99,7 @@ So let’s do it step by step. First let’s filter out the blank lines.
 ```scala
 val fltr = file.filter(_.length > 0)
 ```
+![](https://www.dropbox.com/s/edl1v0bb04bde5s/Screenshot%202015-06-08%2009.22.54.png?dl=1)
 
 WAIT! What is that _ doing there? _ is a shortcut or wildcard in Scala that essentially means ‘whatever happens to be passed to me’. So in the above code the _ stands for each row of our file RDD and we are saying fltr equals a new RDD that is composed of each row with a length > 0.
 
@@ -109,6 +110,7 @@ Then let’s split the line into individual columns seperated by space and then 
 ```scala
 val keys = fltr.map(_.split(",")).map(a => a(5))
 ```
+![](https://www.dropbox.com/s/3kl2r73fj3hex33/Screenshot%202015-06-08%2009.25.24.png?dl=1)
 
 Notice that we are using the ‘whatever’ shortcut again. This time each row of the fltr RDD is having the split(“,”) method called on it, resulting in an anonymous RDD which we are then invoking map on and defining a function with the strange syntax => which stands for, ‘what is before me is the variable name (the type is inferred), what is after me is what you do to it’. In this case, each row (an array) in the anonymous RDD created by split is, in turn, assigned to the variable ‘a’ and then we extract the 5th element from it, which ends up being added to the named RDD called ‘keys’ we declared at the start of the line of code.
 
@@ -117,6 +119,7 @@ Then let’s print out the values of the key.
 ```scala
 keys.collect().foreach(println)
 ```
+![](https://www.dropbox.com/s/38czyv8k6z5knqt/Screenshot%202015-06-08%2009.27.35.png?dl=1)
 
 Notice that some of the states are not unique and repeat. We need to count how many times each key (state) appears in the log.
 
@@ -125,12 +128,14 @@ Now let’s generate a key-value pair for each state as the key and the correspo
 ```scala
 val stateCnt = keys.map(key => (key,1))
 ```
+![](https://www.dropbox.com/s/2ydp5z7ndm8h3gh/Screenshot%202015-06-08%2009.29.05.png?dl=1)
 
 Next, we will iterate through each row of the stateCnt RDD and pass their contents to a utility method available to our RDD that counts the distinct number of rows containing each key
 
 ```scala
 val lastMap = stateCnt.countByKey
 ```
+![](https://www.dropbox.com/s/wg8fojy5x5zem84/Screenshot%202015-06-08%2009.33.56.png?dl=1)
 
 Now, let’s print out the result.
 
@@ -145,10 +150,13 @@ Result: a listing of state abbreviations and the count of how many times visitor
     (fl,1)
     (id,1)
 
+![](https://www.dropbox.com/s/fu4n9h6u257d3ge/Screenshot%202015-06-08%2009.34.58.png?dl=1)
+
 Note that at this point you still have access to all the RDDs you have created during this session. You can reprocess any one of them, for instance, again printing out the values contained in the keys RDD:
 
 ```scala
 keys.collect().foreach(println)
 ```
+![](https://www.dropbox.com/s/6t85jvmyt7ud1xr/Screenshot%202015-06-08%2009.35.58.png?dl=1)
 
 I hope this has proved informative and that you have enjoyed this simple example of how you can interact with Data on HDP using Scala and Apache Spark.
