@@ -17,7 +17,9 @@ Let's open a shell to our Sandbox through SSH:
 
 ![](https://www.dropbox.com/s/tzsxvsnxfo26jn7/Screenshot_2015-04-13_07_58_43.png?dl=1)
 
-The default password is `hadoop`
+The default password is `hadoop` or in case of Sandbox on Azure, what ever you've set it to.
+
+
 
 Then let's get some data with the command below in your shell prompt:
 
@@ -39,6 +41,38 @@ Let's start the PySpark shell and work through a simple example of counting the 
 pyspark
 ```
 ![](https://www.dropbox.com/s/vr5syq682z8usla/Screenshot%202015-04-13%2007.59.59.png?dl=1)
+
+In case you do not want such verbose logging, you can change the verbosity in the `$SPARK_HOME/conf/log4j.properties` file.
+
+First exit `pyspark` console by pressing `CTRL+D`.
+
+![](https://www.dropbox.com/s/wkxkddlkwuv94sb/Screenshot%202015-06-08%2007.16.04.png?dl=1)
+
+In case you do not already have thelog4j.properties` file, make a copy of the file using the commands below
+
+```
+cp /usr/hdp/current/spark-client/conf/log4j.properties.template /usr/hdp/current/spark-client/conf/log4j.properties
+```
+
+![](https://www.dropbox.com/s/dzvu6xu0yfb8bcy/Screenshot%202015-06-08%2007.09.28.png?dl=1)
+
+Then edit the file `/usr/hdp/current/spark-client/conf/log4j.properties` to change the line
+
+```
+log4j.rootCategory=INFO, console
+```
+to
+
+```
+log4j.rootCategory=WARN, console
+```
+![](https://www.dropbox.com/s/x5z0wxkljwk1khb/Screenshot%202015-06-08%2007.17.29.png?dl=1)
+
+Now relaunch `pyspark`
+
+![](https://www.dropbox.com/s/vjayu75m5g6n2db/Screenshot%202015-06-08%2007.19.16.png?dl=1)
+
+Now it's much cleaner. Let's start programming Spark.
 
 As discussed above, the first step is to instantiate the RDD using the Spark Context `sc` with the file `Hortonworks` on HDFS.
 
