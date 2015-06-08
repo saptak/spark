@@ -4,7 +4,9 @@ Scala is relatively new language based on the JVM. The main difference between o
 
 If you have programmed in Java or C#, you should feel right at home with Scala with very little effort.
 
-Let's launch the Spark shell as it is a fully capable Scala shell. You can also run or compile Scala programs from commandline. To learn and experiment with data, I prefer the Spark shell
+You can also run or compile Scala programs from commandline or from IDEs such as Eclipse.
+
+To learn and experiment with data, I prefer the interactivity of the Scala shell. Let's launch the Spark shell as it is a fully capable Scala shell.
 
 ```bash
 spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
@@ -71,3 +73,21 @@ def cube(x: Int) = x*x*x
 ![](https://www.dropbox.com/s/nh66ybashw7exqf/Screenshot%202015-06-08%2013.27.58.png?dl=1)
 
 ###Anonymous Functions
+
+Anonymous functions can be assigned as a `var` or `val` value. It can also be passed to and returned from other functions.
+
+```
+val sqr: Int => Int = x => x * x
+sqr(2)
+```
+![](https://www.dropbox.com/s/00axm7yxhi4tfx0/Screenshot%202015-06-08%2013.50.40.png?dl=1)
+
+Or, anonymous functions can be further shortened to
+
+```
+val thrice: Int => Int = _ * 3
+thrice(15)
+```
+![](https://www.dropbox.com/s/e37sbhm7ie9j2il/Screenshot%202015-06-08%2013.58.41.png?dl=1)
+
+where `_` is a the shorthand for whatever the input was.
