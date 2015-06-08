@@ -1,8 +1,8 @@
 #Exploring Spark with Scala
 
-Here we are going to walk through the process of using Scala and Apache Spark to interactively analyze data on a Apache Hadoop Cluster.
+In this section we are going to walk through the process of using Scala and Apache Spark to interactively analyze data on a Apache Hadoop Cluster.
 
-By the end of this page, you will have learned:
+By the end of this tutorial, you will have learned:
 
   1. How to interact with Apache Spark through an interactive Spark shell
   2. How to read a text file from HDFS and create a RDD
@@ -12,7 +12,7 @@ Let’s open a shell to our Sandbox through SSH:
 
 ![](https://www.dropbox.com/s/tzsxvsnxfo26jn7/Screenshot_2015-04-13_07_58_43.png?dl=1)
 
-The default password is `hadoop` if you are loginn into a Sandbox running on your machine.
+The default password is `hadoop` if you are login in into a Sandbox running on your machine.
 
 Now let’s start the Spark Shell
 
@@ -38,13 +38,13 @@ res0.show
 ```
 ![](https://www.dropbox.com/s/elzn77ewphy8eir/Screenshot%202015-06-08%2008.10.58.png?dl=1)
 
-Now that we’ve launched the Spark shell, more JVMs have been instantiated to support the Shell, namely the SparkSubmit and CoarseGrainedExecutorBackend.
+When we launched the Spark shell, more JVMs has been instantiated to support the Shell, namely the SparkSubmit and CoarseGrainedExecutorBackend.
 
-The SparkSubmit is the driver for our 'Spark shell' application and the CoarseGrainedExecutorBackend is the Executor running to support our application.
+The SparkSubmit is the driver for the 'Spark shell' application and the CoarseGrainedExecutorBackend is the Executor running to support our application.
 
 You can always exit the Spark shell by pressing `CTRL+D`.
 
-Next, let's get some data into the Sandbox by copy-pasting the following into a new file called _littlelog.csv,_ and then save it on your sandbox in the hdfs home directory:
+Next, let's get some data into the Sandbox by copy-pasting the following into a new file called `littlelog.csv`, and then save it on your sandbox in the hdfs `/tmp` directory:
 
     20120315 01:17:06,99.122.210.248,[http://www.acme.com/SH55126545/VD55170364,{7AAB8415-E803-3C5D-7100-E362D7F67CA7},homestead,fl,usa](http://www.acme.com/SH55126545/VD55170364,{7AAB8415-E803-3C5D-7100-E362D7F67CA7},homestead,fl,usa)
 
@@ -61,7 +61,7 @@ Next, let's get some data into the Sandbox by copy-pasting the following into a
 
 ![](https://www.dropbox.com/s/3djm8kuxtt3mri4/Screenshot%202015-06-08%2008.21.53.png?dl=1)
 
-Put the file _littlelog.csv_ into /tmp directory in hadoop:
+Put the file `littlelog.csv` into /tmp directory in hadoop:
 
 ```bash
 hadoop fs -put ./littlelog.csv /tmp/
@@ -80,7 +80,7 @@ and then create an RDD from our `littlelog.csv` into:
 ```scala
 val file = sc.textFile("hdfs://sandbox.hortonworks.com:8020/tmp/littlelog.csv")
 ```
-You now have a freshly created RDD (or at least the model of it), use an action method like `collect()` to gather up the data into the drivers memory then to print out the contents of the file:
+Now we have a freshly created RDD (or at least the model of it). We have to use an action method like `collect()` to gather up the data into the drivers memory then to print out the contents of the file:
 
 ```
 file.collect().foreach(println)
