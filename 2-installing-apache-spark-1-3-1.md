@@ -52,15 +52,4 @@ Now let's run the sample to calculate properties
 ./bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn-client --num-executors 3 --driver-memory 512m --executor-memory 512m --executor-cores 1 lib/spark-examples*.jar 10
 ```
 
-
-Use VIM or your favorite text editor to edit the log4j.properties file:
-sudo vim /etc/dse/spark/log4j.properties
-
-Simply change the 2nd line in the from the INFO -> WARN like so:
-Set everything to be logged to the console
-
-```
-log4j.rootCategory=WARN, console
-log4j.appender.console=org.apache.log4j.ConsoleAppender
-<rest of file truncated>
-```
+![](https://www.dropbox.com/s/o31shit8i04xbxs/Screenshot%202015-06-08%2007.59.16.png?dl=1)
