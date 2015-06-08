@@ -18,7 +18,7 @@ spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
 
 Values can be either mutable or immutable. Mutable values are expressed by the `var` keyword.
 
-```
+```scala
 var a: Int = 5
 a = a + 1
 println(a)
@@ -76,7 +76,7 @@ def cube(x: Int) = x*x*x
 
 Anonymous functions can be assigned as a `var` or `val` value. It can also be passed to and returned from other functions.
 
-```
+```scala
 val sqr: Int => Int = x => x * x
 sqr(2)
 ```
@@ -84,10 +84,29 @@ sqr(2)
 
 Or, anonymous functions can be further shortened to
 
-```
+```scala
 val thrice: Int => Int = _ * 3
 thrice(15)
 ```
 ![](https://www.dropbox.com/s/e37sbhm7ie9j2il/Screenshot%202015-06-08%2013.58.41.png?dl=1)
 
 where `_` is a the shorthand for whatever the input was.
+
+###Collections
+
+Scala has very convenient set of collections including Lists, Sets, Tuples, Iterators and Options. When you combine these data structures with anonymous fucntions and closures it is very expressive.
+
+```
+val strs = Array("This", "is", "happening")
+
+strs.map(_.reverse)
+```
+![](https://www.dropbox.com/s/2b8f3vz68usndmu/Screenshot%202015-06-08%2014.38.48.png?dl=1)
+
+```
+strs.reduce(_+" "+_)
+```
+
+![](https://www.dropbox.com/s/vc17p0t06a5wfmy/Screenshot%202015-06-08%2014.28.31.png?dl=1)
+
+This is far from comprehensive. To learn more visit [http://scala-lang.org](http://scala-lang.org)
