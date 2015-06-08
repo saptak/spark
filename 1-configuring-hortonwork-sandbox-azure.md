@@ -73,28 +73,6 @@ If you scroll down you can see the Estimated spend and other metrics for your VM
 
 ![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/22.png)  
 
-
-Let’s navigate to the home page of your Sandbox by pointing your browser to the URL: `http://<hostname>.cloudapp.net:8888` , where `<hostname>` is the hostname you entered during configuration.
-
-If you are doing it for the first time, it will take you to the registration page.
-
-![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/24.png)  
-
-
-Once you register, you will see the homepage of your Sandbox.
-
-![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/26.png)  
-
-
-By, navigating to port 8000 of your Hortonworks Sandbox on Azure you can access the Hue interface for your Sandbox.
-
-![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/28.png)  
-
-
-Enable Ambari by clicking on the `Enable` button. Ambari is crucial for managing your HDP instance.
-
-![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/30.png)  
-
 Azure sets the SSH port dynamically for security reasons. Let's look up the SSH port.
 
 To look up the SSH port click on the `Settings` icon on the top panel
@@ -126,5 +104,33 @@ sudo passwd root
 Now we can login as `root` with the command `su`
 
 ![](https://www.dropbox.com/s/e1euvrfwau5v9u4/Screenshot%202015-06-07%2015.48.04.png?dl=1)
+
+Next we are going to change the hostname of the VM to `sandbox.hortonworks.com` with the command
+
+```
+sudo hostname sandbox.hortonworks.com
+```
+
+![](https://www.dropbox.com/s/p01exun3ww9v75e/Screenshot%202015-06-07%2020.21.21.png?dl=1)
+
+Let’s navigate to the home page of your Sandbox by pointing your browser to the URL: `http://<hostname>.cloudapp.net:8888` , where `<hostname>` is the hostname you entered during configuration.
+
+If you are doing it for the first time, it will take you to the registration page.
+
+![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/24.png)  
+
+
+Once you register, you will see the homepage of your Sandbox.
+
+![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/26.png)  
+
+Now navigate to port 8000 of your Hortonworks Sandbox on Azure from the browser.
+
+![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/28.png)  
+
+
+Enable Ambari by clicking on the `Enable` button. Ambari is crucial for managing your HDP instance.
+
+![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/30.png)
 
 If you want a full list of tutorial that you can use with your newly minted Hortonworks Sandbox on Azure go to [http://hortonworks.com/tutorials](http://hortonworks.com/tutorials).
