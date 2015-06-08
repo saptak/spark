@@ -48,7 +48,7 @@ Next, let's get some data into the Sandbox by copy-pasting the following into a
 
     20120315 01:17:06,99.122.210.248,[http://www.acme.com/SH55126545/VD55170364,{7AAB8415-E803-3C5D-7100-E362D7F67CA7},homestead,fl,usa](http://www.acme.com/SH55126545/VD55170364,{7AAB8415-E803-3C5D-7100-E362D7F67CA7},homestead,fl,usa)
 
-    20120315 01:34:46,69.76.12.213,[http://www.acme.com/SH55126545/VD55177927,{8D0E437E-9249-4DDA-BC4F-C1E5409E3A3B},coeur](http://www.acme.com/SH55126545/VD55177927,{8D0E437E-9249-4DDA-BC4F-C1E5409E3A3B},coeur d alene,id,usa)
+    20120315 01:34:46,69.76.12.213,[http://www.acme.com/SH55126545/VD55177927,{8D0E437E-9249-4DDA-BC4F-C1E5409E3A3B},coeur d alene,id,usa](http://www.acme.com/SH55126545/VD55177927,{8D0E437E-9249-4DDA-BC4F-C1E5409E3A3B},coeur d alene,id,usa)
 
     20120315 17:23:53,67.240.15.94,[http://www.acme.com/SH55126545/VD55166807,{E3FEBA62-CABA-11D4-820E-00A0C9E58E2D},queensbury,ny,usa](http://www.acme.com/SH55126545/VD55166807,{E3FEBA62-CABA-11D4-820E-00A0C9E58E2D},queensbury,ny,usa)
 
@@ -56,7 +56,7 @@ Next, let's get some data into the Sandbox by copy-pasting the following into a
 
     20120315 01:27:53,98.234.107.75,[http://www.acme.com/SH55126545/VD55179433,{49E0D2EE-1D57-48C5-A27D-7660C78CB55C},sunnyvale,ca,usa](http://www.acme.com/SH55126545/VD55179433,{49E0D2EE-1D57-48C5-A27D-7660C78CB55C},sunnyvale,ca,usa)
 
-    20120315 02:09:38,75.85.165.38,[http://www.acme.com/SH55126545/VD55179433,{F6F8B460-4204-4C26-A32C-B93826EDCB99},san](http://www.acme.com/SH55126545/VD55179433,{F6F8B460-4204-4C26-A32C-B93826EDCB99},san diego,ca,usa)
+    20120315 02:09:38,75.85.165.38,[http://www.acme.com/SH55126545/VD55179433,{F6F8B460-4204-4C26-A32C-B93826EDCB99},san diego,ca,usa](http://www.acme.com/SH55126545/VD55179433,{F6F8B460-4204-4C26-A32C-B93826EDCB99},san diego,ca,usa)
 
 
 ![](https://www.dropbox.com/s/3djm8kuxtt3mri4/Screenshot%202015-06-08%2008.21.53.png?dl=1)
@@ -80,11 +80,12 @@ and then create an RDD from our `littlelog.csv` into:
 ```scala
 val file = sc.textFile("hdfs://sandbox.hortonworks.com:8020/tmp/littlelog.csv")
 ```
-You now have a freshly created RDD (or at least the model of it) Print out the contents of the file:
+You now have a freshly created RDD (or at least the model of it), use an action method like `collect()` to gather up the data into the drivers memory then to print out the contents of the file:
 
 ```
-file.foreach(println)
+file.collect().foreach(println)
 ```
+![](https://www.dropbox.com/s/cclf7ttf45i7xtq/Screenshot%202015-06-08%2008.58.24.png?dl=1)
 
 Now let’s extract some information from this data.
 
