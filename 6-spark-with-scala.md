@@ -12,9 +12,39 @@ Let’s open a shell to our Sandbox through SSH:
 
 ![](https://www.dropbox.com/s/tzsxvsnxfo26jn7/Screenshot_2015-04-13_07_58_43.png?dl=1)
 
-The default password is `hadoop`
+The default password is `hadoop` if you are loginn into a Sandbox running on your machine.
 
-Next, get some data into the Sandbox by copy-pasting the following into a new file called _littlelog.csv,_ and then save it on your sandbox in the hdfs home directory:
+Now let’s start the Spark Shell
+
+```bash
+spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
+```
+![](https://www.dropbox.com/s/nmuwjfn7i6j0jia/Screenshot%202015-06-08%2008.06.32.png?dl=1)
+
+There is a :sh command in the Spark shell that lets you run linux commands:
+
+```scala
+:sh sudo jps
+```
+
+![](https://www.dropbox.com/s/wypitay56i5xpwy/Screenshot%202015-06-08%2008.08.42.png?dl=1)
+
+The res0 output that you see in my case stands for ‘result #0’.
+
+Now, print the output of result #0, which is the output of the commandline `jps` in our case:
+
+```scala
+res0.show
+```
+![](https://www.dropbox.com/s/elzn77ewphy8eir/Screenshot%202015-06-08%2008.10.58.png?dl=1)
+
+Now that we’ve launched the Spark shell, more JVMs have been instantiated to support the Shell, namely the SparkSubmit and CoarseGrainedExecutorBackend.
+
+The SparkSubmit is the driver for our 'Spark shell' application and the CoarseGrainedExecutorBackend is the Executor running to support our application.
+
+You can always exit the Spark shell by pressing `CTRL+D`.
+
+Next, let's get some data into the Sandbox by copy-pasting the following into a new file called _littlelog.csv,_ and then save it on your sandbox in the hdfs home directory:
 
     20120315 01:17:06,99.122.210.248,[http://www.acme.com/SH55126545/VD55170364,{7AAB8415-E803-3C5D-7100-E362D7F67CA7},homestead,fl,usa](http://www.acme.com/SH55126545/VD55170364,{7AAB8415-E803-3C5D-7100-E362D7F67CA7},homestead,fl,usa)
 
@@ -28,19 +58,24 @@ Next, get some data into the Sandbox by copy-pasting the following into a new f
 
     20120315 02:09:38,75.85.165.38,[http://www.acme.com/SH55126545/VD55179433,{F6F8B460-4204-4C26-A32C-B93826EDCB99},san](http://www.acme.com/SH55126545/VD55179433,{F6F8B460-4204-4C26-A32C-B93826EDCB99},san diego,ca,usa)
 
+
+![](https://www.dropbox.com/s/3djm8kuxtt3mri4/Screenshot%202015-06-08%2008.21.53.png?dl=1)
+
 Put the file _littlelog.csv_ into /tmp directory in hadoop:
 
 ```bash
 hadoop fs -put ./littlelog.csv /tmp/
 ```
+![](https://www.dropbox.com/s/kt2ee75ytn3kmfp/Screenshot%202015-06-08%2008.25.17.png?dl=1)
 
-Now let’s start the Spark Shell
+Now we have our data in HDFS, let's launch `spark-shell`
 
-```bash
-spark-shell
 ```
+spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
+```
+![](https://www.dropbox.com/s/ry9ygu7c61ilcz7/Screenshot%202015-06-08%2008.33.54.png?dl=1)
 
-and create an RDD from our _littlelog.csv _into:
+and then create an RDD from our `littlelog.csv` into:
 
 ```scala
 val file = sc.textFile("hdfs://sandbox.hortonworks.com:8020/tmp/littlelog.csv")
@@ -116,25 +151,3 @@ keys.collect().foreach(println)
 ```
 
 I hope this has proved informative and that you have enjoyed this simple example of how you can interact with Data on HDP using Scala and Apache Spark.
-
-There is a :sh command in the Spark shell that lets you submit linux cmd line commands:
-
-```
-scala> :sh sudo jps
-res4: scala.tools.nsc.interpreter.ProcessResult = sudo jps (7 lines, exit 0)
-```
-
-The res4 output that you see stands for ‘result #4’.
-
-Now, print the output of result 2:
-
-```
-scala> res4.show
-12509 jar
-30843 SparkSubmit
-22616 Jps
-22541 CoarseGrainedExecutorBackend
-...
-```
-
-Now that we’ve launched the Spark shell, more JVMs have instantiated to support the Shell, namely the SparkSubmit and CoarseGrainedExecutorBackend. The SparkSubmit is the driver for our ‘Spark shell” application and the CoarseGrainedExecutorBackend is the sole Executor running to support our application.
