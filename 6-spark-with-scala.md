@@ -80,19 +80,23 @@ and then create an RDD from our `littlelog.csv` into:
 ```scala
 val file = sc.textFile("hdfs://sandbox.hortonworks.com:8020/tmp/littlelog.csv")
 ```
-Now we have a freshly created RDD (or at least the model of it). We have to use an action method like `collect()` to gather up the data into the drivers memory then to print out the contents of the file:
+Now we have a freshly created RDD (or at least the model of it). We have to use an action operation like `collect()` to gather up the data into the drivers memory and then to print out the contents of the file:
 
 ```
 file.collect().foreach(println)
 ```
 ![](https://www.dropbox.com/s/cclf7ttf45i7xtq/Screenshot%202015-06-08%2008.58.24.png?dl=1)
 
+Remember doing a `collect()` action operation on a very large distributed RDD can cause your driver program to run out of memory and crash. So, do not use `collect()` except for when you are prototyping your Spark program on a small dataset.
+
 Now let’s extract some information from this data.
 
 Let’s create a map where the state is the key and the number of visitors is the value.
 
 
-Since state is the 6th element in each row of our text in _littlelog.csv _(index 5), we need to use a map operator to pass in the lines of text to a function that will parse out the 6th element and store it in a new RDD containing two elements as the key, then count the number of times it appears in the set and provide that number as the value in the second element of this new RDD. By using the Spark API operator map, we have created or transformed our original RDD into a newer one.
+Since state is the 6th element in each row of our text in `littlelog.csv` (index 5), we need to use a map operator to pass in the lines of text to a function that will parse out the 6th element and store it in a new RDD containing two elements as the key, then count the number of times it appears in the set and provide that number as the value in the second element of this new RDD.
+
+By using the Spark API operator map, we have created or transformed our original RDD into a newer one.
 
 So let’s do it step by step. First let’s filter out the blank lines.
 
@@ -103,7 +107,11 @@ val fltr = file.filter(_.length > 0)
 
 WAIT! What is that _ doing there? _ is a shortcut or wildcard in Scala that essentially means ‘whatever happens to be passed to me’. So in the above code the _ stands for each row of our file RDD and we are saying fltr equals a new RDD that is composed of each row with a length > 0.
 
-So, are invoking the method length on an unknown ‘whatever’ and trusting that Scala will figure out that the thing in each row of the file RDD is actually a String that supports the length operator. So, within the parenthesis of our filter method we are defining the argument: ‘whatever’, and the logic to be applied to it. This pattern of constructing a function within the argument to a method is one of the fundamental characteristics of Scala and once you get used to it, it will make sense and speed up your programming a lot.
+So, we are invoking the method length on an unknown ‘whatever’ and trusting that Scala will figure out that the thing in each row of the file RDD is actually a String that supports the length operator.
+
+So, in other words within the parenthesis of our filter method we are defining the argument: ‘whatever’, and the logic to be applied to it.
+
+This pattern of constructing a function within the argument to a method is one of the fundamental characteristics of Scala and once you get used to it, it will make sense and speed up your programming a lot.
 
 Then let’s split the line into individual columns seperated by space and then let’s grab the 5th columns
 
