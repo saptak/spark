@@ -27,7 +27,7 @@ Start by logging into the Azure Portal with your Azure account:[https://portal.a
 ![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/01.png)  
 
 
-Navigate to the **‘MarketPlace’ ** 
+Navigate to the `MarketPlace` 
 
 ![](http://hortonassets.s3.amazonaws.com/tutorial/azure-sandbox/04.jpeg)  
 
