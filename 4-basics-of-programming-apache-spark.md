@@ -48,7 +48,7 @@ First exit `pyspark` console by pressing `CTRL+D`.
 
 ![](https://www.dropbox.com/s/wkxkddlkwuv94sb/Screenshot%202015-06-08%2007.16.04.png?dl=1)
 
-In case you do not already have thelog4j.properties` file, make a copy of the file using the commands below
+In case you do not already have the `log4j.properties` file, make a copy of the file using the command below
 
 ```
 cp /usr/hdp/current/spark-client/conf/log4j.properties.template /usr/hdp/current/spark-client/conf/log4j.properties
@@ -100,8 +100,3 @@ myLines_filtered.count()
 The final result of this little Spark Job is the number you see at the end. In this case it is `341`.
 
 Hope this little example whets up your appetite for more ambitious data science projects on the Hortonworks Data Platform.
-
-For more on Apache Spark, check out the links below:
-
-- [http://hortonworks.com/spark](http://hortonworks.com/spark)
-- Announcement of Apache Spark on HDP general availability
