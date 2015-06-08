@@ -1,4 +1,4 @@
-#Installing Spark 1.2.0 on HDP 2.2
+#Installing Apache Spark 1.2.0 on HDP 2.2
 
 After SSH'ing into your Sandbox, use `su` to login as root.
 Now let's get the bits using the command

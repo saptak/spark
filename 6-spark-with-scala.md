@@ -2,7 +2,7 @@
 
 Here we are going to walk through the process of using Scala and Apache Spark to interactively analyze data on a Apache Hadoop Cluster.
 
- By the end of this short tutorial, you will have learned:
+By the end of this page, you will have learned:
 
   1. How to interact with Apache Spark through an interactive Spark shell
   2. How to read a text file from HDFS and create a RDD
@@ -30,11 +30,15 @@ Next, get some data into the Sandbox by copy-pasting the following into a new f
 
 Put the file _littlelog.csv_ into /tmp directory in hadoop:
 
-    hadoop fs -put ./littlelog.csv /tmp/
+```bash
+hadoop fs -put ./littlelog.csv /tmp/
+```
 
 Now let’s start the Spark Shell
 
-    spark-shell
+```bash
+spark-shell
+```
 
 and create an RDD from our _littlelog.csv _into:
 
@@ -47,7 +51,7 @@ You now have a freshly created RDD (or at least the model of it) Print out the c
 file.foreach(println)
 ```
 
-Congrats!  You have started on the journey to hello world in Spark. Let’s extract some information from this data.
+Now let’s extract some information from this data.
 
 Let’s create a map where the state is the key and the number of visitors is the value.
 
@@ -88,13 +92,13 @@ val stateCnt = keys.map(key => (key,1))
 
 Next, we will iterate through each row of the stateCnt RDD and pass their contents to a utility method available to our RDD that counts the distinct number of rows containing each key
 
-```
+```scala
 val lastMap = stateCnt.countByKey
 ```
 
 Now, let’s print out the result.
 
-```
+```scala
 lastMap.foreach(println)
 ```
 
