@@ -63,7 +63,7 @@ cube(3)
 ```
 ![](https://www.dropbox.com/s/0w9xcwfe180ylom/Screenshot%202015-06-08%2013.24.04.png?dl=1)
 
-You can write the function more succinctly as
+You can write the function more succinctly by leaving out the braces and the return type as return type can be easily inferred.
 
 ```scala
 def cube(x: Int) = x*x*x
