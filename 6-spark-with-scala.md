@@ -75,12 +75,14 @@ spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
 ```
 ![](https://www.dropbox.com/s/ry9ygu7c61ilcz7/Screenshot%202015-06-08%2008.33.54.png?dl=1)
 
-and then create an RDD from our `littlelog.csv` into:
+In Spark, datasets are represented as a list of entries, where the list is broken up into many different partitions that are each stored on a different machine. Each partition holds a unique subset of the entries in the list. Spark calls datasets that it stores "Resilient Distributed Datasets" (RDDs).
+
+So let's create a RDD from our `littlelog.csv`:
 
 ```scala
 val file = sc.textFile("hdfs://sandbox.hortonworks.com:8020/tmp/littlelog.csv")
 ```
-Now we have a freshly created RDD (or at least the model of it). We have to use an action operation like `collect()` to gather up the data into the drivers memory and then to print out the contents of the file:
+Now we have a freshly created RDD. We have to use an action operation like `collect()` to gather up the data into the drivers memory and then to print out the contents of the file:
 
 ```
 file.collect().foreach(println)

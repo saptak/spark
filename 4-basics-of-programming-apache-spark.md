@@ -3,11 +3,11 @@
 
 ###Concepts
 
-**RDD** or Resilient Distributed Dataset is an immutable collection of objects that is usually partitioned and distributed across multiple physical nodes of the YARN cluster.
+**RDD** or Resilient Distributed Dataset is an immutable collection of objects that is usually partitioned and distributed across multiple physical nodes of the YARN cluster. So once a RDD is instantiated, it cannot be changed.
 
-Typically, RDDs are instantiated by loading data from HDFS on a YARN cluster.
+Typically, RDDs are instantiated by loading data from HDFS, HBASE, etc on a YARN cluster.
 
-Once a RDD is instantiated you can apply a series of operations. All operations fall into one of two types, **transformations** or **actions**. **Transformation** operations build out the processing graph which can then be applied on the partitioned dataset across the YARN cluster once the **Action** operation is invoked.
+Once a RDD is instantiated you can apply a series of operations.  All operations fall into one of two types, **transformations** or **actions**. **Transformation** operations build out the processing graph which can then be applied on the partitioned dataset across the YARN cluster once the **Action** operation is invoked. Each transformation creates a new RDD.
 
 Let's try it out.
 
