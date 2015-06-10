@@ -91,6 +91,19 @@ file.collect().foreach(println)
 
 Remember doing a `collect()` action operation on a very large distributed RDD can cause your driver program to run out of memory and crash. So, do not use `collect()` except for when you are prototyping your Spark program on a small dataset.
 
+Another way to print the content of the RDD is
+
+```
+file.toArray.foreach(println)
+```
+![](https://www.dropbox.com/s/odczf5d1ipjw2fw/Screenshot%202015-06-10%2007.33.44.png?dl=1)
+
+In fact you can easily discover other methods that apply to this RDD by tab auto-completion.
+
+Type the name of the RDD followed by a `.`, in our case it's `file.` and the press the `<TAB>` key.
+
+![](https://www.dropbox.com/s/lvg7fcmj7a728ni/Screenshot%202015-06-10%2007.37.45.png?dl=1)
+
 Now let’s extract some information from this data.
 
 Let’s create a map where the state is the key and the number of visitors is the value.

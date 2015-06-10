@@ -81,7 +81,8 @@ myLines = sc.textFile('hdfs://sandbox.hortonworks.com/user/guest/Hortonworks')
 ```
 ![](https://www.dropbox.com/s/a2d7v61acgozid7/Screenshot%202015-04-13%2009.10.32.png?dl=1)
 
-Now that we have instantiated the RDD, it's time to apply some transformation operations on the RDD. In this case, I am going to apply a simple transformation operation using a Python lambda expression to filter out all the empty lines.
+Now that we have instantiated the RDD, it's time to apply some transformation operations on the RDD. In this case, I am going to apply a simple transformation operation `filter(f)` using a Python lambda expression to filter out all the empty lines. The `filter(f)` method is a data-parallel operation that creates a new RDD from the input RDD by applying filter function `f` to each item in the parent RDD and only passing those elements where the filter function returns `True`. Elements that do not return `True` will be dropped. Like map(), filter can be applied individually to each entry in the dataset, so is easily parallelized using Spark.
+
 
 ```python
 myLines_filtered = myLines.filter( lambda x: len(x) > 0 )
