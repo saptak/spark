@@ -6,7 +6,7 @@ To use the Microsoft Azure Pass navigate to [http://www.microsoftazurepass.com](
 
 ![](https://www.dropbox.com/s/o5x4rbcgbybmqfo/Screenshot%202015-06-04%2019.42.35.png?dl=1)
 
-On the next step, you will need to provide a Live Id that is not already tied up with an existing Azure account.
+On  the next step, you will need to provide a Live Id that is not already tied up with an existing Azure account.
 
 ![](https://www.dropbox.com/s/rcwmsioszdms1c6/Screenshot%202015-06-04%2019.42.46.png?dl=1)
 
