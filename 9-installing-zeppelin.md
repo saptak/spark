@@ -1,4 +1,4 @@
-
+#Installing and configuring Zeppelin
 
 ```bash
 git clone https://github.com/apache/incubator-zeppelin.git
