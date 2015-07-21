@@ -24,7 +24,7 @@ Spark 1.3.1 can be configured on any HDP 2.3 cluster whether it is a multi node 
 
 The instructions in this guide assumes you are using the latest Hortonworks Sandbox
 
-### **Run the Spark Pi Example**
+### Run the Spark Pi Example
 
 To test compute intensive tasks in Spark, the Pi example calculates pi by “throwing darts” at a circle. The example points in the unit square ((0,0) to (1,1)) and sees how many fall in the unit circle. The fraction should be pi/4, which is used to estimate Pi.
 
@@ -42,9 +42,9 @@ To calculate Pi with Spark:
 **Note:** The Pi job should complete without any failure messages and produce output similar to below, note the value of Pi in the output message:
 ![](https://www.dropbox.com/s/i93qmcvjmzue1ho/Screenshot%202015-07-20%2014.48.48.png?dl=1)
 
-### **Using WordCount with Spark**
+### Using WordCount with Spark
 
-#### **Copy input file for Spark WordCount Example**
+#### Copy input file for Spark WordCount Example
 
 Upload the input file you want to use in WordCount to HDFS. You can use any text file as input. In the following example, log4j.properties is used as an example:
 
@@ -52,7 +52,7 @@ As user spark:
 
     hadoop fs -copyFromLocal /etc/hadoop/conf/log4j.properties /tmp/data
 
-### **Run Spark WordCount**
+### Run Spark WordCount
 
 To run WordCount:
 
@@ -218,57 +218,57 @@ You should see output similar to the following:
 
 ![](https://www.dropbox.com/s/pqu1u95ep91omna/Screenshot%202015-07-20%2015.26.53.png?dl=1)
 
-#### **Invoke Hive collect_list UDF**
+#### Invoke Hive collect_list UDF
 
     scala> hiveContext.sql("from TestTable SELECT key, collect_list(value) group by key order by key").collect.foreach(println)
 
 You should see output similar to the following:
 
-    …
-    [489,ArrayBuffer(val_489, val_489, val_489, val_489)]
-    [490,ArrayBuffer(val_490)]
-    [491,ArrayBuffer(val_491)]
-    [492,ArrayBuffer(val_492, val_492)]
-    [493,ArrayBuffer(val_493)]
-    [494,ArrayBuffer(val_494)]
-    [495,ArrayBuffer(val_495)]
-    [496,ArrayBuffer(val_496)]
-    [497,ArrayBuffer(val_497)]
-    [498,ArrayBuffer(val_498, val_498, val_498)]
+![](https://www.dropbox.com/s/3j0qfu95gxdvg2u/Screenshot%202015-07-21%2010.40.04.png?dl=1)
 
-### **Read & Write ORC File Example**
+### Read & Write ORC File Example
 
 In this tech preview, we have implemented full support for ORC files with Spark. We will walk through an example that reads and write ORC file and uses ORC structure to infer a table.
 
-### **ORC File Support**
+### ORC File Support
 
-#### **Create a new Hive Table with ORC format**
+#### Create a new Hive Table with ORC format
 
-    scala>hiveContext.sql("create table orc_table(key INT, value STRING) stored as orc")
+```scala
+hiveContext.sql("create table orc_table(key INT, value STRING) stored as orc")
+```
 
-#### **Load Data into the ORC table**
+#### Load Data into the ORC table
 
-    scala>hiveContext.sql("INSERT INTO table orc_table select * from testtable")
+```scala
+hiveContext.sql("INSERT INTO table orc_table select * from testtable")
+```
 
-#### **Verify that Data is loaded into the ORC table**
+#### Verify that Data is loaded into the ORC table
 
-    scala>hiveContext.sql("FROM orc_table SELECT *").collect().foreach(println)
+```scala
+hiveContext.sql("FROM orc_table SELECT *").collect().foreach(println)
+```
 
-#### **Read ORC Table from HDFS as HadoopRDD**
+![](https://www.dropbox.com/s/ufqqxnpq25uktt6/Screenshot%202015-07-21%2010.42.11.png?dl=1)
 
-    scala> val inputRead = sc.hadoopFile("/apps/hive/warehouse/orc_table", classOf[org.apache.hadoop.hive.ql.io.orc.OrcInputFormat],classOf[org.apache.hadoop.io.NullWritable],classOf[org.apache.hadoop.hive.ql.io.orc.OrcStruct])
+#### Read ORC Table from HDFS as HadoopRDD**
 
-#### **Verify we can manipulate the ORC record through RDD**
+```scala
+val inputRead = sc.hadoopFile("/apps/hive/warehouse/orc_table", classOf[org.apache.hadoop.hive.ql.io.orc.OrcInputFormat],classOf[org.apache.hadoop.io.NullWritable],classOf[org.apache.hadoop.hive.ql.io.orc.OrcStruct])
+```
+![](https://www.dropbox.com/s/ivc37b3vykknsfb/Screenshot%202015-07-21%2010.45.03.png?dl=1)
 
-    scala> val k = inputRead.map(pair => pair._2.toString)
-    scala> val c = k.collect
+#### Verify we can manipulate the ORC record through RDD
+
+```scala
+val k = inputRead.map(pair => pair._2.toString)
+val c = k.collect
+```
 
 You should see output similar to the following:
 
-    ...
-    14/12/22 18:41:37 INFO scheduler.DAGScheduler: Stage 7 (collect at :16) finished in 0.418 s
-    14/12/22 18:41:37 INFO scheduler.DAGScheduler: Job 4 finished: collect at :16, took 0.437672 s
-    c: Array[String] = Array({238, val_238}, {86, val_86}, {311, val_311}, {27, val_27}, {165, val_165}, {409, val_409}, {255, val_255}, {278, val_278}, {98, val_98}, {484, val_484}, {265, val_265}, {193, val_193}, {401, val_401}, {150, val_150}, {273, val_273}, {224, val_224}, {369, val_369}, {66, val_66}, {128, val_128}, {213, val_213}, {146, val_146}, {406, val_406}, {429, val_429}, {374, val_374}, {152, val_152}, {469, val_469}, {145, val_145}, {495, val_495}, {37, val_37}, {327, val_327}, {281, val_281}, {277, val_277}, {209, val_209}, {15, val_15}, {82, val_82}, {403, val_403}, {166, val_166}, {417, val_417}, {430, val_430}, {252, val_252}, {292, val_292}, {219, val_219}, {287, val_287}, {153, val_153}, {193, val_193}, {338, val_338}, {446, val_446}, {459, val_459}, {394, val_394}, {2…
+![](https://www.dropbox.com/s/yqk5a39iep23lby/Screenshot%202015-07-21%2010.46.20.png?dl=1)
 
 #### **Copy example table into HDFS**
 
@@ -276,33 +276,39 @@ You should see output similar to the following:
     cd SPARK_HOME
     hadoop dfs -put examples/src/main/resources/people.txt people.txt
 
-#### **Run Spark-Shell**
+#### Run Spark-Shell
 
     ./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
 
 on Scala prompt type the following, except for the comments
 
-    import org.apache.spark.sql.hive.orc._
-    import org.apache.spark.sql._
-    # Load and register the spark table
-    val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-    val people = sc.textFile("people.txt")
-    val schemaString = "name age"
-    val schema = StructType(schemaString.split(" ").map(fieldName => {if(fieldName == "name") StructField(fieldName, StringType, true) else StructField(fieldName, IntegerType, true)}))
-    val rowRDD = people.map(_.split(",")).map(p => Row(p(0), new Integer(p(1).trim)))
-    # Infer table schema from RDD
-    val peopleSchemaRDD = hiveContext.applySchema(rowRDD, schema)
-    # Create a table from schema
-    peopleSchemaRDD.registerTempTable("people")
-    val results = hiveContext.sql("SELECT * FROM people")
-    results.map(t => "Name: " + t.toString).collect().foreach(println)
-    # Save Table to ORCFile
-    peopleSchemaRDD.saveAsOrcFile("people.orc")
-    # Create Table from ORCFile
-    val morePeople = hiveContext.orcFile("people.orc")
-    morePeople.registerTempTable("morePeople")
-    hiveContext.sql("SELECT * from morePeople").collect.foreach(println)
+```scala
+import org.apache.spark.sql.hive.orc._
+import org.apache.spark.sql._
+val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+```
+![](https://www.dropbox.com/s/6qinxmfpwdmvzon/Screenshot%202015-07-21%2010.54.29.png?dl=1)
 
+Load and register the spark table
+
+```scala
+val people = sc.textFile("people.txt")
+val schemaString = "name age"
+val schema = StructType(schemaString.split(" ").map(fieldName => {if(fieldName == "name") StructField(fieldName, StringType, true) else StructField(fieldName, IntegerType, true)}))
+val rowRDD = people.map(_.split(",")).map(p => Row(p(0), new Integer(p(1).trim)))
+# Infer table schema from RDD
+val peopleSchemaRDD = hiveContext.applySchema(rowRDD, schema)
+# Create a table from schema
+peopleSchemaRDD.registerTempTable("people")
+val results = hiveContext.sql("SELECT * FROM people")
+results.map(t => "Name: " + t.toString).collect().foreach(println)
+# Save Table to ORCFile
+peopleSchemaRDD.saveAsOrcFile("people.orc")
+# Create Table from ORCFile
+val morePeople = hiveContext.orcFile("people.orc")
+morePeople.registerTempTable("morePeople")
+hiveContext.sql("SELECT * from morePeople").collect.foreach(println)
+```
 ### **SparkSQL Thrift Server for JDBC/ODBC access**
 
 With this Tech Preview SparkSQL’s thrift server provides JDBC access to SparkSQL.
