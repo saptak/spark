@@ -1,17 +1,17 @@
 # A Lap around Apache Spark 1.3.1 with HDP 2.3
 
-This Apache Spark 1.3.1 with HDP 2.3 guide lets you evaluate Apache Spark 1.3.1 on YARN with HDP 2.3.
+This Apache Spark 1.3.1 with HDP 2.3 guide walks you through many of the newer features of Apache Spark 1.3.1 on YARN with HDP 2.3.
 
-Hortonworks recently announced general availability of Spark 1.3.1 on the HDP platform. Apache Spark is a fast moving community and Hortonworks plans frequent releases to allow evaluation and production use of the latest Spark technology on HDP for our customers.
+Hortonworks recently announced general availability of Spark 1.3.1 on the HDP platform. Apache Spark is a fast moving community and Hortonworks plans frequent releases to allow evaluation and production use of the latest capabilities of Apache Spark on HDP for our customers.
 
-With YARN, Hadoop can now support various types of workloads; Spark on YARN becomes yet another workload running against the same set of hardware resources.
+With YARN, Hadoop can now support many types of data and application workloads; Spark on YARN becomes yet another workload running against the same set of hardware resources.
 
-This technical preview describes how to:
+This guide describes how to:
 
   * Run Spark on YARN and run the canonical Spark examples: SparkPi and Wordcount.
   * Run Spark 1.3.1 on HDP 2.3.
   * Use Spark DataFrame API
-  * Work with a built-in UDF, collect_list, a key feature of Hive 13. This technical preview provides support for Hive 0.13.1 and instructions on how to call this UDF from Spark shell.
+  * Work with a built-in UDF, collect_list, a key feature of Hive 13. This release provides support for Hive 0.13.1 and instructions on how to call this UDF from Spark shell.
   * Use SparkSQL thrift JDBC/ODBC Server.
   * View history of finished jobs with Spark Job History.
   * Use ORC files with Spark, with examples.
