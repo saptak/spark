@@ -1,6 +1,6 @@
 # A Lap around Apache Spark 1.3.1 with HDP 2.3
 
-This Apache Spark 1.3.1 with HDP 2.3 guide walks you through many of the newer features of Apache Spark 1.3.1 on YARN with HDP 2.3.
+This Apache Spark 1.3.1 with HDP 2.3 guide walks you through many of the newer features of Apache Spark 1.3.1 on YARN.
 
 Hortonworks recently announced general availability of Spark 1.3.1 on the HDP platform. Apache Spark is a fast moving community and Hortonworks plans frequent releases to allow evaluation and production use of the latest capabilities of Apache Spark on HDP for our customers.
 
@@ -71,7 +71,7 @@ To run WordCount:
 Output similar to below displays before the Scala REPL prompt, scala>:
 ![](https://www.dropbox.com/s/f5bq5biq88gc2bs/Screenshot%202015-07-20%2014.50.31.png?dl=1)
 
-#### At the Scala REPL prompt enter:**
+#### At the Scala REPL prompt enter:
 
 ```scala
 val file = sc.textFile("/tmp/data")
