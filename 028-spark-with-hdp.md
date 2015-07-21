@@ -1,4 +1,4 @@
-# Apache Spark 1.3.1 with HDP 2.3
+# A Lap around Apache Spark 1.3.1 with HDP 2.3
 
 This Apache Spark 1.3.1 with HDP 2.3 guide lets you evaluate Apache Spark 1.3.1 on YARN with HDP 2.3.
 
@@ -32,12 +32,16 @@ To calculate Pi with Spark:
 
   1. **Change to your Spark directory and become spark OS user:**
 
-    cd /usr/hdp/current/spark-client
-    su spark
+```bash
+cd /usr/hdp/current/spark-client  
+su spark
+```
 
   2. **Run the Spark Pi example in yarn-client mode:**
 
-    ./bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn-client --num-executors 3 --driver-memory 512m --executor-memory 512m --executor-cores 1 lib/spark-examples*.jar 10
+```bash
+./bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn-client --num-executors 3 --driver-memory 512m --executor-memory 512m --executor-cores 1 lib/spark-examples*.jar 10
+```
 
 **Note:** The Pi job should complete without any failure messages and produce output similar to below, note the value of Pi in the output message:
 ![](https://www.dropbox.com/s/i93qmcvjmzue1ho/Screenshot%202015-07-20%2014.48.48.png?dl=1)
@@ -50,7 +54,9 @@ Upload the input file you want to use in WordCount to HDFS. You can use any text
 
 As user spark:
 
-    hadoop fs -copyFromLocal /etc/hadoop/conf/log4j.properties /tmp/data
+```bash
+hadoop fs -copyFromLocal /etc/hadoop/conf/log4j.properties /tmp/data
+```
 
 ### Run Spark WordCount
 
@@ -58,7 +64,9 @@ To run WordCount:
 
 #### Run the Spark shell:
 
-    ./bin/spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
+```bash
+./bin/spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
+```
 
 Output similar to below displays before the Scala REPL prompt, scala>:
 ![](https://www.dropbox.com/s/f5bq5biq88gc2bs/Screenshot%202015-07-20%2014.50.31.png?dl=1)
@@ -75,13 +83,17 @@ counts.saveAsTextFile("/tmp/wordcount")
 
 To view the output in the scala shell:
 
-  scala > counts.count()
+```scala
+counts.count()
+```
 
 ![](https://www.dropbox.com/s/0j1yk2okljlqx3k/Screenshot%202015-07-20%2014.55.13.png?dl=1)
 
 To print the full output of the WordCount job:
 
-  scala > counts.toArray().foreach(println)
+```scala
+counts.toArray().foreach(println)
+```
 
 ![](https://www.dropbox.com/s/942krdi729qbkzx/Screenshot%202015-07-20%2014.57.10.png?dl=1)
 
@@ -90,11 +102,15 @@ To print the full output of the WordCount job:
 To read the output of WordCount using HDFS command:
 Exit the scala shell.
 
-  scala > exit
+```scala
+exit
+```
 
 View WordCount Results:
 
-  hadoop fs -ls /tmp/wordcount
+```bash
+hadoop fs -ls /tmp/wordcount
+```
 
 It should display output similar to:
 
@@ -102,7 +118,9 @@ It should display output similar to:
 
 Use the HDFS cat command to see the WordCount output. For example,
 
-    hadoop fs -cat /tmp/wordcount/part-00000
+```bash
+hadoop fs -cat /tmp/wordcount/part-00000
+```
 
 ![](https://www.dropbox.com/s/xed8ikl35jj8dx7/Screenshot%202015-07-20%2014.59.10.png?dl=1)
 
@@ -112,24 +130,29 @@ With Spark 1.3.1, DataFrame API is a new feature. DataFrame API provide easier a
 
 Let's upload people text file to HDFS
 
-    cd /usr/hdp/current/spark-client
+```bash
+cd /usr/hdp/current/spark-client
 
-    su spark
-    hdfs dfs -copyFromLocal examples/src/main/resources/people.txt people.txt
+su spark
+hdfs dfs -copyFromLocal examples/src/main/resources/people.txt people.txt
 
-    hdfs dfs -copyFromLocal examples/src/main/resources/people.json people.json
+hdfs dfs -copyFromLocal examples/src/main/resources/people.json people.json
+```
 
 ![](https://www.dropbox.com/s/g8igatmz9v7n4hy/Screenshot%202015-07-20%2015.01.49.png?dl=1)
 
 Then let's launch the Spark Shell
 
-    cd /usr/hdp/current/spark-client
-    su spark
-    ./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
-
+```bash
+cd /usr/hdp/current/spark-client
+su spark
+./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
+```
 At the Spark Shell type the following:
 
-    scala>val df = sqlContext.jsonFile("people.json")
+```scala
+val df = sqlContext.jsonFile("people.json")
+```
 
 This will produce and output such as
 
@@ -139,35 +162,45 @@ This will produce and output such as
 
 Now print the content of DataFrame with df.show
 
-    scala>df.show
+```scala
+df.show
+```
 
 ![](https://www.dropbox.com/s/keq8tjfkz4fjfjb/Screenshot%202015-07-20%2015.06.29.png?dl=1)
 
 ##### Data Frame API examples
 
-    scala>import org.apache.spark.sql.functions._
-    // Select everybody, but increment the age by 1
-    scala>df.select(df("name"), df("age") + 1).show()
-
+```scala
+import org.apache.spark.sql.functions._
+// Select everybody, but increment the age by 1
+df.select(df("name"), df("age") + 1).show()
+```
 ![](https://www.dropbox.com/s/n8lmf0lg4ed6t54/Screenshot%202015-07-20%2015.13.59.png?dl=1)
 
-    // Select people older than 21
-    scala>df.filter(df("age") > 21).show()
+```scala
+// Select people older than 21
+df.filter(df("age") > 21).show()
+```
 
 ![](https://www.dropbox.com/s/2yjemit47m1eo3v/Screenshot%202015-07-20%2015.14.47.png?dl=1)
 
-    // Count people by age
-    df.groupBy("age").count().show()
+```scala
+// Count people by age
+df.groupBy("age").count().show()
+```
+
 ![](https://www.dropbox.com/s/y5mk0zdxzi8si0t/Screenshot%202015-07-20%2015.15.41.png?dl=1)
 
 ##### Programmatically Specifying Schema
 
-    import org.apache.spark.sql._
-    val sqlContext = new org.apache.spark.sql.SQLContext(sc)
-    val people = sc.textFile("people.txt")
-    val schemaString = "name age"
-    import org.apache.spark.sql.types.{StructType,StructField,StringType}
-    val schema = StructType(schemaString.split(" ").map(fieldName => StructField(fieldName, StringType, true)))
+```scala
+import org.apache.spark.sql._
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+val people = sc.textFile("people.txt")
+val schemaString = "name age"
+import org.apache.spark.sql.types.{StructType,StructField,StringType}
+val schema = StructType(schemaString.split(" ").map(fieldName => StructField(fieldName, StringType, true)))
+```
 
 ![](https://www.dropbox.com/s/21m81un74ml65dd/Screenshot%202015-07-20%2015.18.02.png?dl=1)
 
@@ -191,20 +224,24 @@ Before running Hive examples run the following steps:
 
 #### Launch Spark Shell on YARN cluster
 
-    su hdfs
-    ./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
-
+```scala
+su hdfs
+./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
+```
 #### Create Hive Context
 
-    scala> val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-
+```scala
+val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+```
 You should see output similar to the following:
 
 ![](https://www.dropbox.com/s/aga459qghah9x15/Screenshot%202015-07-20%2015.24.12.png?dl=1)
 
 #### Create Hive Table
 
-    scala> hiveContext.sql("CREATE TABLE IF NOT EXISTS TestTable (key INT, value STRING)")
+```scala
+hiveContext.sql("CREATE TABLE IF NOT EXISTS TestTable (key INT, value STRING)")
+```
 
 You should see output similar to the following:
 
@@ -220,8 +257,9 @@ You should see output similar to the following:
 
 #### Invoke Hive collect_list UDF
 
-    scala> hiveContext.sql("from TestTable SELECT key, collect_list(value) group by key order by key").collect.foreach(println)
-
+```scala
+hiveContext.sql("from TestTable SELECT key, collect_list(value) group by key order by key").collect.foreach(println)
+```
 You should see output similar to the following:
 
 ![](https://www.dropbox.com/s/3j0qfu95gxdvg2u/Screenshot%202015-07-21%2010.40.04.png?dl=1)
@@ -272,19 +310,24 @@ You should see output similar to the following:
 
 #### **Copy example table into HDFS**
 
-    su hdfs
-    cd SPARK_HOME
-    hadoop dfs -put examples/src/main/resources/people.txt people.txt
+```bash
+cd /usr/hdp/current/spark-client
+su spark
+hadoop dfs -put examples/src/main/resources/people.txt people.txt
+```
 
 #### Run Spark-Shell
 
-    ./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
+```bash
+./bin/spark-shell --num-executors 2 --executor-memory 512m --master yarn-client
+```
 
 on Scala prompt type the following, except for the comments
 
 ```scala
 import org.apache.spark.sql.hive.orc._
 import org.apache.spark.sql._
+import org.apache.spark.sql.types.{StructType,StructField,StringType}
 val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
 ```
 ![](https://www.dropbox.com/s/6qinxmfpwdmvzon/Screenshot%202015-07-21%2010.54.29.png?dl=1)
@@ -294,70 +337,112 @@ Load and register the spark table
 ```scala
 val people = sc.textFile("people.txt")
 val schemaString = "name age"
-val schema = StructType(schemaString.split(" ").map(fieldName => {if(fieldName == "name") StructField(fieldName, StringType, true) else StructField(fieldName, IntegerType, true)}))
+val schema = StructType(schemaString.split(" ").map(fieldName => StructField(fieldName, StringType, true)))
 val rowRDD = people.map(_.split(",")).map(p => Row(p(0), new Integer(p(1).trim)))
-# Infer table schema from RDD
+```
+![](https://www.dropbox.com/s/xqmvdgs14b08yak/Screenshot%202015-07-21%2013.35.47.png?dl=1)
+
+Infer table schema from RDD
+
+```scala
 val peopleSchemaRDD = hiveContext.applySchema(rowRDD, schema)
-# Create a table from schema
+```
+![](https://www.dropbox.com/s/n5heod5udrwsxm3/Screenshot%202015-07-21%2013.37.06.png?dl=1)
+
+Create a table from schema
+
+```scala
 peopleSchemaRDD.registerTempTable("people")
 val results = hiveContext.sql("SELECT * FROM people")
 results.map(t => "Name: " + t.toString).collect().foreach(println)
-# Save Table to ORCFile
+```
+![](https://www.dropbox.com/s/fngxh0pmxmcwdvb/Screenshot%202015-07-21%2013.43.49.png?dl=1)
+
+Save Table to ORCFile
+
+```scala
 peopleSchemaRDD.saveAsOrcFile("people.orc")
-# Create Table from ORCFile
+```
+
+Create Table from ORCFile
+
+```scala
 val morePeople = hiveContext.orcFile("people.orc")
 morePeople.registerTempTable("morePeople")
+```
+
+![](https://www.dropbox.com/s/ub7o8isy6b0gfqk/Screenshot%202015-07-21%2013.46.51.png?dl=1)
+
+Query from the table
+
+```scala
 hiveContext.sql("SELECT * from morePeople").collect.foreach(println)
 ```
-### **SparkSQL Thrift Server for JDBC/ODBC access**
 
-With this Tech Preview SparkSQL’s thrift server provides JDBC access to SparkSQL.
+![](https://www.dropbox.com/s/fo6ryfluwqn323i/Screenshot%202015-07-21%2013.47.58.png?dl=1)
+
+### SparkSQL Thrift Server for JDBC/ODBC access
+
+With this release SparkSQL’s thrift server provides JDBC access to SparkSQL.
 
   1. **Start Thrift Server**
 From SPARK_HOME, start SparkSQL thrift server, Note the port value of the thrift JDBC server
 
-    su spark
-    ./sbin/start-thriftserver.sh --master yarn-client --executor-memory 512m --hiveconf hive.server2.thrift.port=10001
+```scala
+su spark
+./sbin/start-thriftserver.sh --master yarn-client --executor-memory 512m --hiveconf hive.server2.thrift.port=10001
+```
 
   * **Connect to Thrift Server over beeline**
 Launch beeline from SPARK_HOME
 
-    su spark
-    ./bin/beeline
+```scala
+su spark
+./bin/beeline
+```
 
   * **Connect to Thrift Server & Issue SQL commands**
 On beeline prompt
 
-    beeline>!connect jdbc:hive2://localhost:10001
+```sql
+!connect jdbc:hive2://localhost:10001
+```
 
 Note this is example is without security enabled, so any username password should work.
 
 Note, the connection may take a few second to be available and try show tables after a wait of 10-15 second in a Sandbox env.
 
-    0: jdbc:hive2://localhost:10001> show tables;
-    +------------+--------------+
-    | tableName | isTemporary |
-    +------------+--------------+
-    | orc_table | false |
-    | testtable | false |
-    +------------+--------------+
-    2 rows selected (1.275 seconds)
-    0: jdbc:hive2://localhost:10001> exit
+```sql
+show tables;
+```
+![](https://www.dropbox.com/s/cwgmi3dbhm6566y/Screenshot%202015-07-21%2013.53.04.png?dl=1)
+
+type `Ctrl+C` to exit beeline.
 
   * **Stop Thrift Server**
 
-    ./sbin/stop-thriftserver.sh
+```bash
+./sbin/stop-thriftserver.sh
+```
+![](https://www.dropbox.com/s/b6mvjepkfuadkxi/Screenshot%202015-07-21%2013.55.40.png?dl=1)
 
-### **Spark Job History Server**
+### Spark Job History Server
 
-Spark Job history server is integrated with YARN’s Application Timeline Server(ATS) and publishes job metrics to ATS. This allows job details to be available after the job finishes. Y
+Spark Job history server is integrated with YARN’s Application Timeline Server(ATS) and publishes job metrics to ATS. This allows job details to be available after the job finishes.
 
   1. **Start Spark History Server**
 
-    ./sbin/start-history-server.sh
+```bash
+./sbin/start-history-server.sh
+```
 
-You can let the history server run, while you run examples in the tech preview and go to YARN resource manager page at http://:8088/cluster/apps and see the logs of finished application with the history server.
+You can let the history server run, while you run examples and go to YARN resource manager page at [http://127.0.0.1:8088/cluster/apps](http://127.0.0.1:8088/cluster/apps) and see the logs of finished application with the history server.
 
   2. **Stop Spark History Server**
 
-    ./sbin/stop-history-server.sh
+```bash
+./sbin/stop-history-server.sh
+```
+![](https://www.dropbox.com/s/5p14qxkuqw6r9hg/Screenshot%202015-07-21%2014.00.10.png?dl=1)
+
+Visit [http://hortonworks.com/tutorials](http://hortonworks.com/tutorials) for more tutorials on Apache Spark.
