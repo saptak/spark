@@ -94,7 +94,7 @@ where `_` is a the shorthand for whatever the input was.
 
 ###Collections
 
-Scala has very convenient set of collections including Lists, Sets, Tuples, Iterators and Options. When you combine these data structures with anonymous fucntions and closures it is very expressive.
+Scala has very convenient set of collections including Lists, Sets, Tuples, Iterators and Options. When you combine these data structures with anonymous functions and closures it is very expressive.
 
 ```
 val strs = Array("This", "is", "happening")
