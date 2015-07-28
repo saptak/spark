@@ -1,10 +1,10 @@
 #Using IPython Notebook with Apache Spark
 
-In this tutorial we are going to configure IPython with Apache Spark on YARN in a few steps. We will also explore how to use IPython with Spark after we configure it.
+In this tutorial we are going to configure IPython notebook with Apache Spark on YARN in a few steps.
 
-IPython is an interactive Python shell which lets you interact with your data one step at a time and also perform simple visualizations.
+IPython notebook is an interactive Python shell which lets you interact with your data one step at a time and also perform simple visualizations.
 
-Here are some of the differences between the pyspark shell and the IPython shell. IPython supports tab autocompletion on class names, functions, methods, variables. It offers more explicit and colour-highlighted error messages than the command line python shell. It also provides basic UNIX shell integration allowing you can run simple shell commands such as cp, ls, rm, cp, etc. directly from the IPython. IPython integrates with many common GUI modules like PyQt, PyGTK, tkinter as well wide variety of data science Python packages.
+IPython notebook supports tab autocompletion on class names, functions, methods, variables. It also offers more explicit and colour-highlighted error messages than the command line python shell. It provides integration with basic UNIX shell allowing you can run simple shell commands such as cp, ls, rm, cp, etc. directly from the IPython. IPython integrates with many common GUI modules like PyQt, PyGTK, tkinter as well wide variety of data science Python packages.
 
 ###Prerequisites
 
