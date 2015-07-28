@@ -135,17 +135,36 @@ chmod +x start_ipython_notebook.sh
 
 ###Port Forwarding
 
+We need to forward the port `8889` from the guest VM, Sandbox to the host machine, your desktop for IPython notebook to be accessible from a browser on your host machine.
+
+Open the VirtualBox App and open the settings page of the Sandbox VM by right clicking on the Sandbox VM and selecting settings.
+
+Then select the networking tab from the top:
+
 ![](https://www.dropbox.com/s/3lcecis4oajtu63/Screenshot%202015-07-20%2011.18.35.png?dl=1)
 
+Then click on the port forwarding button to configure the port. Add a new port configuration by clicking the `+` icon on the top right of the page.
+
+Input a name for application, IP and the guest and host ports as per the screenshot below:
+
 ![](https://www.dropbox.com/s/5xr5bprqde2epr6/Screenshot%202015-07-20%2011.20.00.png?dl=1)
+
+Then press `OK` to confirm the change in configuration.
+
+Now we are ready to test IPython notebook.
+
+###Running IPython  notebook
+
+Execute the shell script we created before from the sandbox command prompt using the command below:
 
 ```
 ./start_ipython_notebook.sh
 ```
 ![](https://www.dropbox.com/s/phtrtmv6s01g13k/Screenshot%202015-07-20%2011.21.00.png?dl=1)
 
+Now, open a browser on your host machine and navigate to the URl [http://127.0.0.1:8889](http://127.0.0.1:8889) and you should see the screen below:
+
 
 ![](https://www.dropbox.com/s/2ga17v2a8klpdz9/Screenshot%202015-07-20%2011.22.06.png?dl=1)
 
-
-```
+Voila! you have just configured IPython notebook with Apache Spark on you Sandbox.
