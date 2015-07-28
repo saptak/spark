@@ -85,11 +85,18 @@ pip install "ipython[notebook]"
 
 ###Configuring IPython
 
+Since we want to use IPython with Apache Spark we have to use the Python interpreter which is built with Apache Spark, `pyspark`, instead of the default Python interpreter.
+
+As a first step of configuring that, let's create a IPython profile for `pyspark`
+
 ```bash
 ipython profile create pyspark
 ```
 
 ![](https://www.dropbox.com/s/2klc4095wrxyz5d/Screenshot%202015-07-20%2011.01.58.png?dl=1)
+
+Within the this newly minted IPython profile for `pyspark` found at `~/.ipython/profile_pyspark/`, edit the file `ipython_notebook_config.py` with text editor like `nano` and change the values in the file to resemble values below:  
+
 
 ```
 c.NotebookApp.ip = '*'
@@ -97,10 +104,19 @@ c.NotebookApp.open_browser = False
 c.NotebookApp.port = 8889
 c.NotebookApp.notebook_dir = u'/usr/hdp/current/spark-client/'
 ```
+Note the port we are using for IPython. Ensure this port is not already being used. The default port for IPython notebook is `8888`, which is also being used by Sandbox as it's welcome page. So we are changing it to `8889`. We are going to forward this port in the next section to ensure we can access IPython notebook from the host machine.
 
 ![](https://www.dropbox.com/s/xcdasm4tmmnyibi/Screenshot%202015-07-20%2011.10.50.png?dl=1)
 
-`nano ~/start_ipython_notebook.sh`
+Next we are going to create a shell script to set the appropriate values everytime we want to start IPython.
+
+Create a shell script with the following command:
+
+```bash
+nano ~/start_ipython_notebook.sh
+```
+
+Then copy the following lines into the file:
 
 ```
 #!/bin/bash
@@ -110,13 +126,14 @@ IPYTHON_OPTS="notebook --profile pyspark" pyspark
 
 ![](https://www.dropbox.com/s/r9sagxlzixee8mk/Screenshot%202015-07-20%2011.15.27.png?dl=1)
 
+Finally we need to make the shell script we just created executable:
+
 ```bash
 chmod +x start_ipython_notebook.sh
 ```
 ![](https://www.dropbox.com/s/ofqdaeuevnk05mo/Screenshot%202015-07-20%2011.17.19.png?dl=1)
 
-
-Port Forwarding
+###Port Forwarding
 
 ![](https://www.dropbox.com/s/3lcecis4oajtu63/Screenshot%202015-07-20%2011.18.35.png?dl=1)
 
