@@ -168,3 +168,5 @@ Now, open a browser on your host machine and navigate to the URl [http://127.0.0
 ![](https://www.dropbox.com/s/2ga17v2a8klpdz9/Screenshot%202015-07-20%2011.22.06.png?dl=1)
 
 Voila! you have just configured IPython notebook with Apache Spark on you Sandbox.
+
+In the next few tutorials we are going to explore how we can use IPython notebook to analyze and visualize data.
