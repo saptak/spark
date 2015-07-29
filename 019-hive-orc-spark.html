@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Using Hive and ORC with Apache Spark | Crash Course on Apache Spark</title>
+
+    <!-- Styles and fonts -->
+    <link href="themes/glide/stylesheets/glide.css" rel="stylesheet" type="text/css" />
+    <link href="themes/glide/stylesheets/syntax.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Bree+Serif&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <script src="themes/glide/javascripts/modernizr.js" type="text/javascript"></script>
+  </head>
+
+  <body class="x019-hive-orc-spark glide">
+    <div class="page-wrapper">
+
+      <!--[if lt IE 7]>
+          <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      <![endif]-->
+
+      <header class="page-header" role="banner">
+<a class="invisilink" href="./">            <span class="book-title">Crash Course on Apache Spark</span>
+</a>        <span class="book-author visuallyhidden">by <a href="http://linkedin.com/in/saptak">Saptak Sen</a></span>
+      </header>
+
+        <div class="content-wrapper clearfix">
+
+          <section class="main-content" role="main">
+            <div class="main-content-source">
+              <h1>Using Hive and ORC with Apache Spark</h1>
+
+<p>In this tutorial, we will explore how you can access and analyze data on Hive from Spark.</p>
+
+<p>Spark SQL uses the Spark engine to execute SQL queries either on data sets persisted in HDFS or on existing RDDs. It allows you to manipulate data with SQL statements within a Spark program.</p>
+
+<h3>Prerequisite</h3>
+
+<p>The only prerequiste for this tutorial is the latest <a href="http://hortonworks.com/sandbox">Hortonworks Sandbox</a> installed on your computer or on the <a href="http://hortonworks.com/blog/hortonworks-sandbox-azure/">cloud</a>.</p>
+
+<p>In case you are running an Hortonworks Sandbox with an earlier version of Apache Spark, for the instruction in <a href="#">this</a> tutorial to install the Apache Spark 1.3.1.</p>
+
+<h3>Getting the dataset</h3>
+
+<p>To begin, login in to Hortonworks Sandbox through SSH:</p>
+
+<p><img src="https://www.dropbox.com/s/tzsxvsnxfo26jn7/Screenshot_2015-04-13_07_58_43.png?dl=1" /></p>
+
+<p>The default password is <code>hadoop</code>.</p>
+
+<p>Now let&rsquo;s download the dataset with the command below:</p>
+<pre class="highlight shell">wget http://hortonassets.s3.amazonaws.com/tutorial/data/yahoo_stocks.csv
+</pre>
+
+<p><img src="https://www.dropbox.com/s/x5s6hwx1tin4wbu/Screenshot%202015-05-28%2008.49.00.png?dl=1" /></p>
+
+<p>and copy the downloaded file to HDFS:</p>
+<pre class="highlight shell">hadoop fs -put ./yahoo_stocks.csv /tmp/
+</pre>
+
+<p><img src="https://www.dropbox.com/s/pjv0zrrg775yy5w/Screenshot%202015-05-28%2008.49.55.png?dl=1" /></p>
+
+<h3>Starting the Spark shell</h3>
+
+<p>Use the command below to launch the Scala REPL for Apache Spark:</p>
+<pre class="highlight shell">./bin/spark-shell --master yarn-client --driver-memory 512m --executor-memory 512m
+</pre>
+
+<p><img src="https://www.dropbox.com/s/zjipmm9q9viltrt/Screenshot%202015-05-28%2008.53.08.png?dl=1" /></p>
+
+<p>Notice it is already starting with Hive integration as we have preconfigured it on the Hortonworks Sandbox.</p>
+
+<p>Before we get started with the actual analytics lets import some of the libraries we are going to use below.</p>
+<pre class="highlight scala"><span class="k">import</span> <span class="nn">org.apache.spark.sql.hive.orc._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql._</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/qupxygona3u1720/Screenshot%202015-05-21%2011.43.56.png?dl=1" /></p>
+
+<h3>Creating HiveContext</h3>
+
+<p>HiveContext is an instance of the Spark SQL execution engine that integrates with data stored in Hive. The more basic SQLContext provides a subset of the Spark SQL support that does not depend on Hive. It reads the configuration for Hive from hive-site.xml on the classpath.</p>
+<pre class="highlight scala"><span class="k">val</span> <span class="n">hiveContext</span> <span class="k">=</span> <span class="k">new</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">hive</span><span class="o">.</span><span class="nc">HiveContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/evc1qupcrlebnu9/Screenshot%202015-05-21%2011.47.33.png?dl=1" /></p>
+
+<h3>Creating ORC tables</h3>
+
+<p>ORC is a self-describing type-aware columnar file format designed for Hadoop workloads. It is optimized for large streaming reads and with integrated support for finding required rows fast. Storing data in a columnar format lets the reader read, decompress, and process only the values required for the current query. Because ORC files are type aware, the writer chooses the most appropriate encoding for the type and builds an internal index as the file is persisted.</p>
+
+<p>Predicate pushdown uses those indexes to determine which stripes in a file need to be read for a particular query and the row indexes can narrow the search to a particular set of 10,000 rows. ORC supports the complete set of types in Hive, including the complex types: structs, lists, maps, and unions.</p>
+
+<p>Specifying <code>as orc</code> at the end of the SQL statement below ensures that the Hive table is stored in the ORC format.</p>
+<pre class="highlight scala"><span class="n">hiveContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">"create table yahoo_orc_table (date STRING, open_price FLOAT, high_price FLOAT, low_price FLOAT, close_price FLOAT, volume INT, adj_price FLOAT) stored as orc"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/pddrk6ga15wtr2e/Screenshot%202015-05-28%2009.33.34.png?dl=1" /></p>
+
+<h3>Loading the file and creating a RDD</h3>
+
+<p><strong>Resilient Distributed Dataset</strong>(RDD), is an immutable collection of objects that is partitioned and distributed across multiple physical nodes of a YARN cluster and that can be operated in parallel.</p>
+
+<p>Once an RDD is instantiated, you can apply a <a href="https://spark.apache.org/docs/1.2.0/programming-guide.html#rdd-operations">series of operations</a>. All operations fall into one of two types:<a href="https://spark.apache.org/docs/1.2.0/programming-guide.html#transformations">transformations</a> or <a href="https://spark.apache.org/docs/1.2.0/programming-guide.html#actions">actions</a>. **Transformation** operations, as the name suggests, create new datasets from an existing RDD and build out the processing DAG that can then be applied on the partitioned dataset across the YARN cluster. An **Action** operation, on the other hand, executes DAG and returns a value.</p>
+
+<p>Normally, we would have directly loaded the data in the ORC table we created above and then created an RDD from the same, but in this to cover a little more surface of Spark we will create an RDD directly from the CSV file on HDFS and then apply Schema on the RDD and write it back to the ORC table.</p>
+
+<p>With the command below we instantiate an RDD:</p>
+<pre class="highlight scala"><span class="k">val</span> <span class="n">yahoo_stocks</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">"hdfs://sandbox.hortonworks.com:8020/tmp/yahoo_stocks.csv"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/lddom9ac9jftgbx/Screenshot%202015-05-21%2012.08.16.png?dl=1" /></p>
+
+<h3>Separating the header from the data</h3>
+
+<p>Let&rsquo;s assign the first row of the RDD above to a new variable
+<code>scala
+val header = yahoo_stocks.first
+</code>
+<img src="https://www.dropbox.com/s/3zlxwalwx5tlxml/Screenshot%202015-05-28%2010.14.21.png?dl=1" /></p>
+
+<p>Let&rsquo;s dump this new RDD in the console to see what we have here:</p>
+<pre class="highlight scala"><span class="n">header</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/36w14xmh7218e1s/Screenshot%202015-05-28%2010.22.10.png?dl=1" /></p>
+
+<p>Now we need to separate the data into a new RDD where we do not have the header above and :</p>
+<pre class="highlight scala"><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="n">yahoo_stocks</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">!=</span> <span class="n">header</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span>
+</pre>
+
+<p>check the first row to seen it&rsquo;s indeed only the data in the RDD</p>
+<pre class="highlight scala"><span class="n">data</span><span class="o">.</span><span class="n">first</span>
+</pre>
+
+<h3>Creating a schema</h3>
+
+<p>There&rsquo;s two ways of doing this.</p>
+<pre class="highlight scala"><span class="k">case</span> <span class="k">class</span> <span class="nc">YahooStockPrice</span><span class="o">(</span><span class="n">date</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">open</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">high</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">low</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">close</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">volume</span><span class="k">:</span> <span class="kt">Integer</span><span class="o">,</span> <span class="n">adjClose</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/rto78tzekm8pum3/Screenshot%202015-05-28%2011.54.06.png?dl=1" /></p>
+
+<h3>Attaching the schema to the parsed data</h3>
+
+<p>Create an RDD of Yahoo Stock Price objects and register it as a table.</p>
+<pre class="highlight scala"><span class="k">val</span> <span class="n">stockprice</span> <span class="k">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">","</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="nc">YahooStockPrice</span><span class="o">(</span><span class="n">row</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="n">row</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="n">trim</span><span class="o">.</span><span class="n">toFloat</span><span class="o">,</span> <span class="n">row</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">trim</span><span class="o">.</span><span class="n">toFloat</span><span class="o">,</span> <span class="n">row</span><span class="o">(</span><span class="mi">3</span><span class="o">).</span><span class="n">trim</span><span class="o">.</span><span class="n">toFloat</span><span class="o">,</span> <span class="n">row</span><span class="o">(</span><span class="mi">4</span><span class="o">).</span><span class="n">trim</span><span class="o">.</span><span class="n">toFloat</span><span class="o">,</span> <span class="n">row</span><span class="o">(</span><span class="mi">5</span><span class="o">).</span><span class="n">trim</span><span class="o">.</span><span class="n">toInt</span><span class="o">,</span> <span class="n">row</span><span class="o">(</span><span class="mi">6</span><span class="o">).</span><span class="n">trim</span><span class="o">.</span><span class="n">toFloat</span><span class="o">)).</span><span class="n">toDF</span><span class="o">()</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/ma418p8gnx3uekr/Screenshot%202015-05-28%2011.59.33.png?dl=1" /></p>
+
+<p>Let&rsquo;s verify that the data has been correctly parsed by the statement above by dumping the first row of the RDD containing the parsed data:</p>
+<pre class="highlight scala"><span class="n">stockprice</span><span class="o">.</span><span class="n">first</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/ynbm95rsi4oyto6/Screenshot%202015-05-28%2014.02.58.png?dl=1" /></p>
+
+<p>if we want to dump more all the rows, we can use</p>
+<pre class="highlight scala"><span class="n">stockprice</span><span class="o">.</span><span class="n">show</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/nh48ic4un84ct2g/Screenshot%202015-05-28%2014.08.33.png?dl=1" /></p>
+
+<p>To verify the schema, let&rsquo;s dump the schema:</p>
+<pre class="highlight scala"><span class="n">stockprice</span><span class="o">.</span><span class="n">printSchema</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/hr49pyn8jccvlwi/Screenshot%202015-05-28%2014.12.38.png?dl=1" /></p>
+
+<h3>Registering a temporary table</h3>
+
+<p>Now let&rsquo;s give this RDD a name, so that we can use it in Spark SQL statements:</p>
+<pre class="highlight scala"><span class="n">stockprice</span><span class="o">.</span><span class="n">registerTempTable</span><span class="o">(</span><span class="s">"yahoo_stocks_temp"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/x3hc5u39v9cr332/Screenshot%202015-05-28%2014.19.30.png?dl=1" /></p>
+
+<h3>Querying against the table</h3>
+
+<p>Now that our schema&rsquo;d RDD with data has a name we can use Spark SQL commands to query it. Remember the table below is not a Hive table, it is just a RDD we are querying with SQL.</p>
+<pre class="highlight scala"><span class="k">val</span> <span class="n">results</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">"SELECT * FROM yahoo_stocks_temp"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/tyhykbc2e51xrom/Screenshot%202015-05-28%2016.24.14.png?dl=1" /></p>
+
+<p>The resultset returned from the Spark SQL query is now loaded in the <code>results</code> RDD. Let&rsquo;s pretty print it out on the command line.</p>
+<pre class="highlight scala"><span class="n">results</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="s">"Stock Entry: "</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">toString</span><span class="o">).</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/nm4zqg7ouzcwku7/Screenshot%202015-05-21%2013.08.32.png?dl=1" /></p>
+
+<h3>Saving as an ORC file</h3>
+
+<p>Now let&rsquo;s persist back the RDD into the Hive ORC table we created before.</p>
+<pre class="highlight scala"><span class="n">results</span><span class="o">.</span><span class="n">saveAsOrcFile</span><span class="o">(</span><span class="s">"yahoo_stocks_orc"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/a6d1ydhtw9kg4fi/Screenshot%202015-05-28%2016.52.44.png?dl=1" /></p>
+
+<h3>Reading the ORC file</h3>
+
+<p>Let&rsquo;s now try to read back the ORC file, we just created back into an RDD. But before we do so, we need a hiveContext:</p>
+<pre class="highlight scala">
+<span class="k">val</span> <span class="n">hiveContext</span> <span class="k">=</span> <span class="k">new</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">hive</span><span class="o">.</span><span class="nc">HiveContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/sb99lpm8jtyyicu/Screenshot%202015-05-28%2017.23.06.png?dl=1" /></p>
+
+<p>now we can try to read the ORC file with:</p>
+<pre class="highlight scala"><span class="k">val</span> <span class="n">yahoo_stocks_orc</span> <span class="k">=</span> <span class="n">hiveContext</span><span class="o">.</span><span class="n">orcFile</span><span class="o">(</span><span class="s">"yahoo_stocks_orc"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/xu0aygiph6ntdbu/Screenshot%202015-05-28%2017.24.05.png?dl=1" /></p>
+
+<p>Let&rsquo;s register it as a temporary in-memory table mapped to the ORC table:</p>
+<pre class="highlight scala"><span class="n">yahoo_stocks_orc</span><span class="o">.</span><span class="n">registerTempTable</span><span class="o">(</span><span class="s">"orcTest"</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/6nx8a7axy8qdgo4/Screenshot%202015-05-28%2017.24.53.png?dl=1" /></p>
+
+<p>Now we can verify weather we can query it back:</p>
+<pre class="highlight scala"><span class="n">hiveContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">"SELECT * from orcTest"</span><span class="o">).</span><span class="n">collect</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</pre>
+
+<p><img src="https://www.dropbox.com/s/1f92sc2yclqovhd/Screenshot%202015-05-28%2017.26.08.png?dl=1" /></p>
+
+<p>Voila! We just did a round trip of persisting and reading data to and from Hive ORC using Spark SQL.</p>
+
+<p>Hope this tutorial illustrated some of the ways you can integrate Hive and Spark.</p>
+
+            </div>
+            <nav class="main-content-nav clearfix" role="navigation">
+              <ul>
+                <li><a class="previous" href="016-spark-with-scala.html">Previous</a></li>
+                <li><a class="next" href="022-installing-zeppelin.html">Next</a></li>
+              </ul>
+            </nav>
+          </section>
+
+          <aside class="aside-content" role="complementary">
+            <div class="aside-wrapper">
+
+              <div class="block table-of-contents">
+                <h3>Table of Contents</h3>
+                <nav role="navigation">
+                  <ul>
+                    <li class='child '><a href="./">Introduction</a></li><li class='child '><a href="001-configuring-hortonwork-sandbox-azure.html">Configuring Hortonworks Sandbox on Azure</a></li><li class='child '><a href="004-installing-apache-spark-1-3-1.html">Installing Apache Spark 1.3.1 on HDP 2.2.4.2</a></li><li class='child '><a href="007-Installing-Spark-1-2.html">Installing Apache Spark 1.2.0 on HDP 2.2</a></li><li class='child '><a href="010-basics-of-programming-apache-spark.html">Basics of programming Apache Spark</a></li><li class='child '><a href="013-scala-primer.html">A short primer on Scala</a></li><li class='child '><a href="016-spark-with-scala.html">Exploring Spark with Scala</a></li><li class='child active'><a href="019-hive-orc-spark.html">Using Hive and ORC with Apache Spark</a></li><li class='child '><a href="022-installing-zeppelin.html">Installing and configuring Zeppelin</a></li><li class='child '><a href="025-ipython-notebook-with-apache-spark.html">Using IPython Notebook with Apache Spark</a></li><li class='child '><a href="028-spark-with-hdp.html">A Lap around Apache Spark 1.3.1 with HDP 2.3</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <!--
+              <div class="block translations">
+                <h3>Book translations</h3>
+                <p>This book is translated into 
+                  <a href="#">Spanish</a>
+                  and <a href="#">English</a>.
+                  You can help with more translations <a href="https://github.com/saptak/spark">on Github</a>.
+                </p>
+              </div>
+              -->
+            </div><!-- end aside-wrapper -->
+          </aside>
+
+        </div><!-- end content-wrapper -->
+
+      <footer class="page-footer">
+
+        <div class="footer-wrapper">
+          <!--
+          <div class="block downloads">&nbsp;
+            <h3>Downloads</h3>
+            <p>Download this book in
+                <a href="#">PDF</a>, <a href="#">mobi</a>, and <a href="#">epub</a>
+              form for free.
+            </p>
+          </div>
+          -->
+          <div class="block license">
+            <h3>License</h3>
+            <p>This book is licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0">Attribution-ShareAlike</a> license.</p>
+          </div>
+
+          <div class="block open-source">
+            <h3>This book is open source</h3>
+            <p>The source of this book is <a href="https://github.com/saptak/spark">hosted on Github</a>. Go, ahead. Check it out.</p>
+          </div>
+
+          <small class="small-text">Made with <a href="http://bitbooks.cc">Bitbooks</a></small>
+
+        </div><!-- end footer-wrapper -->
+
+      </footer>
+
+
+    </div><!-- end page-wrapper -->
+
+    <!-- include scripts just before the close of the body tag -->
+    <script src="themes/glide/javascripts/anchor.min.js" type="text/javascript"></script>
+    <script src="themes/glide/javascripts/glide.js" type="text/javascript"></script>
+  </body>
+</html>
